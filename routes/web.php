@@ -19,14 +19,20 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
+
+#views.general
 Route::get('/', function () {
     return view('index');
 })->name('index');
 
+
+#dashboards
 Route::get('dashboards/website-analytics', function () {
     return view('dashboards.website-analytics');
 })->name('dashboards.web-analytics');
 
+
+#apps.user-management
 Route::get('/apps/user-management/users/list', function () {
     return view('apps.user-management.users.list');
 })->name('users.list');
@@ -46,3 +52,13 @@ Route::get('/apps/user-management/roles/view', function () {
 Route::get('/apps/user-management/perminssions', function () {
     return view('apps.user-management.permissions');
 })->name('users.perms');
+
+
+#account
+Route::get('account/overview', function () {
+    return view('account.overview');
+})->name('acc.overview');
+
+Route::get('account/settings', function () {
+    return view('account.settings');
+})->name('acc.settings');
