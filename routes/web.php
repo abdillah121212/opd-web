@@ -21,13 +21,21 @@ require __DIR__.'/auth.php';
 
 
 #views.general
+<<<<<<< HEAD
 Route::get('/index', function () {
+=======
+Route::get('/', function () {
+>>>>>>> 27781fd5012f61c04744c5fdac4829949eac224a
     return view('index');
 })->name('index');
 
 
 #dashboards
+<<<<<<< HEAD
 Route::get('/dashboards/website-analytics', function () {
+=======
+Route::get('dashboards/website-analytics', function () {
+>>>>>>> 27781fd5012f61c04744c5fdac4829949eac224a
     return view('dashboards.website-analytics');
 })->name('dashboards.web-analytics');
 
@@ -61,4 +69,8 @@ Route::get('account/overview', function () {
 
 Route::get('account/settings', function () {
     return view('account.settings');
+<<<<<<< HEAD
 })->name('acc.settings');
+=======
+})->name('acc.settings');
+>>>>>>> 27781fd5012f61c04744c5fdac4829949eac224a
