@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -41,9 +41,8 @@ Route::get('/apps/user-management/users/view', function () {
     return view('apps.user-management.users.view');
 })->name('users.view');
 
-Route::get('/apps/user-management/roles/list', function () {
-    return view('apps.user-management.roles.list');
-})->name('roles.list');
+Route::get('/apps/user-management/users/list', [UserController::class, 'index'])
+    ->name('users.list');
 
 Route::get('/apps/user-management/roles/view', function () {
     return view('apps.user-management.roles.view');
