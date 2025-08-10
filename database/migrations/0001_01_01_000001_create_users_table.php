@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('password');
             $table->foreignId('level_id')->constrained('levels')->onDelete('cascade');
             $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('delete_add', ['active', 'inactive'])->default('active');
             $table->rememberToken();
             $table->timestamps();
         });

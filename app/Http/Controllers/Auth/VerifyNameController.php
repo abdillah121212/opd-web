@@ -17,7 +17,7 @@ class VerifyNameController extends Controller
         $user = $request->user();
 
         if ($user->hasVerifiedName()) {
-            return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
+            return redirect()->intended(route(' ', absolute: false).'?verified=1');
         }
 
         if ($user->markNameAsVerified()) {
