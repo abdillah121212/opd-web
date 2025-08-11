@@ -27,8 +27,8 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-
-        return redirect()->intended(route('login', absolute: false));
+        // Tambahkan fallback route yang aman
+        return redirect()->intended(route('index', absolute: false));
     }
 
     /**
@@ -42,6 +42,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('login');
+        return redirect('/');
     }
 }

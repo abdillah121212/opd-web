@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Level;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
@@ -14,7 +15,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::select('id', 'name', 'level_id', 'created_at', 'status',)
+        $users = User::with('level')
+            ->select('id', 'name', 'level_id', 'created_at', 'status')
             ->where('status', 'active')
             ->get();
 
@@ -35,7 +37,7 @@ class UserController extends Controller
             'level_id' => 'required|exists:levels,id'
         ]);
 
-        User::create([
+        $user = User::create([
             'name'       => $request->name,
             'password'   => Hash::make($request->password),
             'level_id'   => $request->level_id,
@@ -43,13 +45,44 @@ class UserController extends Controller
             'delete_add' => 'active'
         ]);
 
+        // Jika request AJAX, return JSON
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'User berhasil ditambahkan.',
+                'user' => $user->load('level')
+            ]);
+        }
+
         return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
+    }
+
+    /**
+     * Show user details (for view modal)
+     */
+    public function show($id)
+    {
+        $user = User::with('level')->findOrFail($id);
+        
+        return response()->json([
+            'success' => true,
+            'user' => $user
+        ]);
     }
 
     public function edit($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::with('level')->findOrFail($id);
         $levels = Level::where('name', 'admin')->get();
+
+        // Jika request AJAX, return JSON
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'user' => $user,
+                'levels' => $levels
+            ]);
+        }
 
         return view('apps.user-management.users.edit', compact('user', 'levels'));
     }
@@ -75,14 +108,30 @@ class UserController extends Controller
 
         $user->update($data);
 
+        // Jika request AJAX, return JSON
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'User berhasil diperbarui.',
+                'user' => $user->fresh()->load('level')
+            ]);
+        }
+
         return redirect()->route('users.index')->with('success', 'User berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        $user->status = 'inactive';
-        $user->save();
+        $user->update(['status' => 'inactive']);
+
+        // Jika request AJAX, return JSON
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'User berhasil di-nonaktifkan.'
+            ]);
+        }
 
         return redirect()->route('users.index')->with('success', 'User berhasil di-nonaktifkan.');
     }
