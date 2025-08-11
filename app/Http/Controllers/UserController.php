@@ -10,31 +10,23 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     /**
-     * Menampilkan daftar user dengan level "admin" saja
+     * Menampilkan daftar user dengan level "admin"
      */
     public function index()
     {
-        $users = User::with('level')
-            ->whereHas('level', function ($query) {
-                $query->where('name', 'admin');
-            })
+        $users = User::select('id', 'name', 'level_id', 'created_at', 'status',)
+            ->where('status', 'active')
             ->get();
 
-        return view('users.list', compact('users'));
+        return view('apps.user-management.users.list', compact('users'));
     }
 
-    /**
-     * Menampilkan form tambah user
-     */
     public function create()
     {
         $levels = Level::where('name', 'admin')->get();
-        return view('users.create', compact('levels'));
+        return view('apps.user-management.users.create', compact('levels'));
     }
 
-    /**
-     * Menyimpan user baru
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -44,30 +36,24 @@ class UserController extends Controller
         ]);
 
         User::create([
-            'name'     => $request->name,
-            'password' => Hash::make($request->password),
-            'level_id' => $request->level_id,
-            'status'   => 'active',
+            'name'       => $request->name,
+            'password'   => Hash::make($request->password),
+            'level_id'   => $request->level_id,
+            'status'     => 'active',
             'delete_add' => 'active'
         ]);
 
         return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
     }
 
-    /**
-     * Menampilkan form edit user
-     */
     public function edit($id)
     {
         $user = User::findOrFail($id);
         $levels = Level::where('name', 'admin')->get();
 
-        return view('users.edit', compact('user', 'levels'));
+        return view('apps.user-management.users.edit', compact('user', 'levels'));
     }
 
-    /**
-     * Mengupdate data user
-     */
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -92,14 +78,12 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User berhasil diperbarui.');
     }
 
-    /**
-     * Menghapus user
-     */
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        $user->delete();
+        $user->status = 'inactive';
+        $user->save();
 
-        return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
+        return redirect()->route('users.index')->with('success', 'User berhasil di-nonaktifkan.');
     }
 }
