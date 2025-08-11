@@ -20,6 +20,16 @@ use Illuminate\Support\Facades\Route;
 require __DIR__.'/auth.php';
 
 
+#authentication.sign-in sign-up
+Route::get('sign-in', function () {
+    return view('authentication.layouts.corporate.sign-in');
+})->name('sign-in');
+
+Route::get('sign-up', function () {
+    return view('authentication.layouts.corporate.sign-up');
+})->name('sign-up');
+
+
 #views.general
 Route::get('index', function () {
     return view('index');
